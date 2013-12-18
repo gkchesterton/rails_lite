@@ -8,6 +8,7 @@ class ControllerBase
   def initialize(req, res, route_params = {})
     @req = req 
     @res = res 
+    @params = Params.new(req, route_params)
   end
 
   def session
@@ -38,5 +39,13 @@ class ControllerBase
   end
 
   def invoke_action(name)
+    self.send(name)
+    unless @already_built_response
+      begin
+        render(name)
+      rescue 
+        render_content("Template not found") 
+      end
+    end
   end
 end

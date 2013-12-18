@@ -23,11 +23,8 @@ class StatusController < ControllerBase
 end
 
 class UserController < ControllerBase
-  def index
-    users = ["u1", "u2", "u3"]
-
-    render_content(users.to_json, "text/json")
-  end
+ def index
+ end
 end
 
 server.mount_proc '/' do |req, res|

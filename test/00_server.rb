@@ -11,11 +11,11 @@ trap('INT') { server.shutdown }
 
 class MyController < ControllerBase
   def go
-  	count = session['count'].to_s
-    render_content("Hi", "text/html")
+  	# count = session['count'].to_s
+   #  render_content("Hi", "text/html")
 
    #  # after you have template rendering, uncomment:
-   # render :show
+   render :show
 
     # after you have sessions going, uncomment:
    session["count"] ||= 0

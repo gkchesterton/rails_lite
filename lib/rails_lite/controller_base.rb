@@ -32,6 +32,9 @@ class ControllerBase
   end
 
   def render(template_name)
+    controller_name = self.class.to_s.underscore
+    template = ERB.new(File.read("views/#{controller_name}/#{template_name}.html.erb")).result(binding)
+    render_content(template, 'text/html')
   end
 
   def invoke_action(name)

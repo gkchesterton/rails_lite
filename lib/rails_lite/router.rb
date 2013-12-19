@@ -1,5 +1,3 @@
-require 'debugger'
-
 class Route
   attr_reader :pattern, :http_method, :controller_class, :action_name
 
@@ -15,7 +13,18 @@ class Route
   end
 
   def run(req, res)
-    @controller_class.new(req, res).invoke_action(@action_name)
+    query_params = {}
+    match_data = /(\w+\=\w+)/.match(req.query_string)
+    if match_data
+      match_data.each do |pair|
+        key, val = pair.split("=")[0], pair.split("=")[1]
+        query_params[key] = val
+      end
+    end
+
+    @controller_class.new(req, res, query_params).invoke_action(@action_name)
+    
+
   end
 end
 

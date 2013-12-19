@@ -1,3 +1,5 @@
+require 'debugger'
+
 class Route
   attr_reader :pattern, :http_method, :controller_class, :action_name
 
@@ -9,21 +11,22 @@ class Route
   end
 
   def matches?(req)
-    true if @pattern =~ req.path && @http_method == req.request_method.downcase.to_sym 
+    path = req.path
+    path += req.query_string if req.query_string
+    true if @pattern =~ path && @http_method == req.request_method.downcase.to_sym 
   end
 
   def run(req, res)
     query_params = {}
     match_data = /(\w+\=\w+)/.match(req.query_string)
     if match_data
-      match_data.each do |pair|
+      match_data.captures.each do |pair|
         key, val = pair.split("=")[0], pair.split("=")[1]
-        query_params[key] = val
+        query_params[key.to_sym] = val
       end
-    end
+    end 
 
     @controller_class.new(req, res, query_params).invoke_action(@action_name)
-    
 
   end
 end
@@ -58,7 +61,7 @@ class Router
 
   def run(req, res)
     route = match(req)
-    puts route 
+    
     if route 
       route.run(req, res)
     else
